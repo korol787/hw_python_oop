@@ -35,8 +35,6 @@ class Record:
 class CashCalculator(Calculator):
     EURO_RATE = 75.01
     USD_RATE = 68.01
-    def __init__(self, limit):
-        super().__init__(limit)
     def get_today_cash_remained(self, currency):
         if currency == 'rub':
             coef = 1
