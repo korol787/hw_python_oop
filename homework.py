@@ -1,7 +1,5 @@
 import datetime as dt
 
-today_date = dt.datetime.now().date()
-
 
 class Calculator:
     
@@ -13,6 +11,7 @@ class Calculator:
         self.records.append(record)
         
     def get_today_stats(self):
+        today_date = dt.datetime.now().date()
         amount_today = 0
         for record in self.records:
             if record.date == today_date:
@@ -20,6 +19,7 @@ class Calculator:
         return amount_today
     
     def get_week_stats(self):
+        today_date = dt.datetime.now().date()
         amount_week = 0
         week_ago = today_date - dt.timedelta(days=6)
         for record in self.records:
@@ -33,6 +33,7 @@ class Record:
     def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
+        today_date = dt.datetime.now().date()
         if date is None:
             self.date = today_date
         else:
@@ -46,23 +47,22 @@ class CashCalculator(Calculator):
     USD_RATE = 68.01
     
     def get_today_cash_remained(self, currency):
-        currencies = {'rub': [1, 'руб'], 'usd': [self.USD_RATE, 'USD']}
-        currencies['eur'] = [self.EURO_RATE, 'Euro']
-        coef = None
-        for a, b in currencies.items():
-            if currency == a:
-                coef = b[0]
-                currency = b[1]
-        if coef == None:
+        currencies = {
+            'rub': (1, 'руб'),
+            'usd': (self.USD_RATE, 'USD'),
+            'eur': (self.EURO_RATE, 'Euro')
+            }
+        if currency not in currencies.keys():
             raise Exception('Некорректно введен код валюты')
+        coef = currencies[currency][0]
+        currency = currencies[currency][1]
         cash_today = self.get_today_stats()
         if cash_today < self.limit:   
             cash_balance = (self.limit - cash_today)/coef
             return 'На сегодня осталось {:.2f} {}'.format(cash_balance, currency)
         elif cash_today > self.limit:
             money_debt = (cash_today - self.limit)/coef
-            end = 'Денег нет, держись: твой долг - '
-            return end + '{:.2f} {}'.format(money_debt, currency)
+            return 'Денег нет, держись: твой долг - {:.2f} {}'.format(money_debt, currency)
         return 'Денег нет, держись'
         
 
@@ -72,6 +72,5 @@ class CaloriesCalculator(Calculator):
         calories_today = self.get_today_stats()
         if calories_today < self.limit:
             calories_for_today = self.limit - calories_today
-            end = 'Сегодня можно съесть что-нибудь ещё, но с общей '
-            return end + f'калорийностью не более {calories_for_today} кКал'
+            return f'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {calories_for_today} кКал'
         return 'Хватит есть!'
