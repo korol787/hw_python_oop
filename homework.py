@@ -58,11 +58,12 @@ class CashCalculator(Calculator):
         currency = currencies[currency][1]
         cash_today = self.get_today_stats()
         if cash_today < self.limit:   
-            cash_balance = (self.limit - cash_today)/coef
+            cash_balance = (self.limit - cash_today) / coef
             return 'На сегодня осталось {:.2f} {}'.format(cash_balance, currency)
         elif cash_today > self.limit:
             money_debt = (cash_today - self.limit)/coef
-            return 'Денег нет, держись: твой долг - {:.2f} {}'.format(money_debt, currency)
+            return ('Денег нет, держись: твой долг - '
+        + '{:.2f} {}'.format(money_debt, currency))
         return 'Денег нет, держись'
         
 
@@ -72,5 +73,6 @@ class CaloriesCalculator(Calculator):
         calories_today = self.get_today_stats()
         if calories_today < self.limit:
             calories_for_today = self.limit - calories_today
-            return f'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {calories_for_today} кКал'
+            return ('Сегодня можно съесть что-нибудь ещё, ' + 
+        f'но с общей калорийностью не более {calories_for_today} кКал')
         return 'Хватит есть!'
